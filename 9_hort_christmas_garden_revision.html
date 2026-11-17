@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9 Hort – The Christmas Garden Survival Challenge</title>
+<style>
+:root{--forest:#174b38;--leaf:#3e8154;--lime:#d8e9a8;--cream:#fff9e9;--red:#b83e43;--gold:#f0bd4d;--ink:#20352b;--pale:#eaf4e7}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(140deg,#103b30,#286b4a);font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink);min-height:100vh}
+header{padding:28px 18px 22px;text-align:center;color:white;background:linear-gradient(120deg,#123d30,#226044);border-bottom:7px solid var(--gold)}
+header .tag{display:inline-block;background:var(--red);padding:6px 14px;border-radius:30px;font-weight:bold;letter-spacing:1px}
+h1{font-size:clamp(2rem,5vw,3.3rem);margin:12px 0 6px}
+header p{font-size:1.08rem;margin:0 auto;max-width:760px;line-height:1.5}
+main{max-width:1100px;margin:24px auto;padding:0 16px 40px}
+.progress-wrap{background:#ffffff25;border-radius:20px;padding:12px 16px;color:white;margin-bottom:18px}
+.progress-label{display:flex;justify-content:space-between;gap:10px;font-weight:bold;margin-bottom:8px}
+progress{width:100%;height:16px;accent-color:var(--gold)}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.nav button,.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:bold;cursor:pointer;background:var(--gold);color:#342b16;box-shadow:0 3px 0 #b58a32}
+.nav button.active{background:var(--red);color:white;box-shadow:0 3px 0 #7e282e}
+.nav button:focus,.btn:focus,button:focus,input:focus{outline:3px solid #174b38;outline-offset:2px}
+.panel{display:none;background:var(--cream);border-radius:20px;padding:clamp(18px,3vw,30px);box-shadow:0 10px 25px #061b1640}
+.panel.active{display:block}
+h2{color:var(--forest);margin-top:0;font-size:1.8rem}
+h3{color:var(--forest)}
+.lead{font-size:1.08rem;line-height:1.55}
+.note{background:#fff0c9;border-left:5px solid var(--gold);padding:12px 15px;border-radius:8px;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;margin:18px 0}
+.card{background:white;border:2px solid #dce8d6;border-radius:15px;padding:15px}
+.card strong{color:var(--forest)}
+.big{font-size:2rem}
+.flashcard{min-height:180px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:#e6f1df;border:3px dashed #8aaf7d;border-radius:18px;padding:22px;margin:16px 0}
+.flashcard .term{font-size:1.7rem;font-weight:bold;color:var(--forest)}
+.flashcard .definition{font-size:1.12rem;line-height:1.5;margin-top:14px}
+.hidden{display:none!important}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn.secondary{background:#dcebd5;box-shadow:0 3px 0 #9eb695}
+.btn.red{background:var(--red);color:white;box-shadow:0 3px 0 #7e282e}
+.question{background:white;border:2px solid #dce8d6;border-radius:14px;padding:15px;margin:12px 0}
+.question p{font-weight:bold;margin-top:0}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.answers button,.matchbtn{border:2px solid #b9cfb1;border-radius:10px;background:#f6faf2;padding:11px;text-align:left;cursor:pointer;font-size:1rem}
+.answers button:hover,.matchbtn:hover{background:#e5f0df}
+.feedback{margin-top:10px;font-weight:bold;min-height:24px}
+.good{color:#176b37}.bad{color:#a52e36}
+.matchgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.matchbtn.selected{background:#ffe9a8;border-color:#c28b19}
+.matchbtn.done{background:#d9efdc;border-color:#4d9b5e}
+input[type=text]{width:100%;padding:12px;border:2px solid #b9cfb1;border-radius:10px;font-size:1rem}
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:15px 0}
+.chain button{border:2px solid #a9c49d;background:white;border-radius:12px;padding:12px;cursor:pointer;font-weight:bold}
+.chain button.chosen{background:#dcebd5}
+.chain .slot{background:#f3f0df;border:2px dashed #b6a76d;min-width:115px;min-height:48px;border-radius:10px;padding:10px;text-align:center}
+.scorebox{display:inline-block;background:var(--forest);color:white;padding:8px 14px;border-radius:30px;font-weight:bold}
+footer{text-align:center;color:#e7f1df;padding:10px 20px 30px}
+.small{font-size:.93rem;color:#53685b}
+@media(max-width:600px){.matchgrid{grid-template-columns:1fr}.nav button{flex:1 1 42%}}
+</style>
+</head>
+<body>
+<header>
+  <span class="tag">9 HORT • CHRISTMAS REVISION</span>
+  <h1>🎄 The Christmas Garden Survival Challenge 🌱</h1>
+  <p>The Christmas elves have mixed up all their garden knowledge! Complete the challenges, collect points and prove you know your biodiversity, plants, food chains and healthy soil.</p>
+</header>
+<main>
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Your garden progress</span><span id="progressText">0 / 5 challenges</span></div>
+    <progress id="progress" value="0" max="5"></progress>
+  </div>
+  <div class="nav" aria-label="Challenge navigation">
+    <button class="active" data-tab="learn">1. Learn it</button>
+    <button data-tab="match">2. Match it</button>
+    <button data-tab="chain">3. Food chain</button>
+    <button data-tab="detective">4. Garden detective</button>
+    <button data-tab="quiz">5. Final challenge</button>
+  </div>
+
+  <section class="panel active" id="learn">
+    <h2>🎁 Challenge 1: Elf Training Cards</h2>
+    <p class="lead">Before you can save the Christmas garden, you need to know the important words. Read each card, try to explain it to someone, then reveal the definition.</p>
+    <div class="flashcard">
+      <div class="small">CARD <span id="cardNumber">1</span> OF <span id="cardTotal">12</span></div>
+      <div class="term" id="term">Biodiversity</div>
+      <div class="definition hidden" id="definition">The variety of living organisms in an area.</div>
+    </div>
+    <div class="controls">
+      <button class="btn" id="reveal">Reveal meaning</button>
+      <button class="btn secondary" id="prevCard">← Previous</button>
+      <button class="btn secondary" id="nextCard">Next card →</button>
+      <button class="btn red" id="learnDone">I've revised these!</button>
+    </div>
+    <p class="note">🌟 Tip: Don't just read the definition. Give your own example from a garden, school grounds or New Zealand nature.</p>
+  </section>
+
+  <section class="panel" id="match">
+    <h2>🧤 Challenge 2: Match the Muddled Garden Words</h2>
+    <p class="lead">The elves have mixed up the words and meanings. Click one word, then click the matching meaning. Find all six pairs.</p>
+    <div class="scorebox">Pairs found: <span id="pairsFound">0</span> / 6</div>
+    <div class="matchgrid" id="matchGrid" style="margin-top:16px"></div>
+    <div class="feedback" id="matchFeedback" aria-live="polite"></div>
+    <div class="controls"><button class="btn secondary" id="resetMatch">Mix them up again</button></div>
+  </section>
+
+  <section class="panel" id="chain">
+    <h2>🐛 Challenge 3: Build a Food Chain</h2>
+    <p class="lead">A food chain shows how energy passes between organisms through eating. Put these garden organisms in a sensible order, starting with the producer.</p>
+    <div class="note">Think: Which organism makes its own food? Which one eats the plant? Which one might eat that animal?</div>
+    <div class="chain" id="chainChoices"></div>
+    <h3>Your food chain</h3>
+    <div class="chain" id="chainSlots">
+      <div class="slot">1. Start</div><span>→</span><div class="slot">2</div><span>→</span><div class="slot">3</div>
+    </div>
+    <div class="controls">
+      <button class="btn" id="checkChain">Check my food chain</button>
+      <button class="btn secondary" id="clearChain">Start again</button>
+    </div>
+    <div class="feedback" id="chainFeedback" aria-live="polite"></div>
+    <p class="small">There can be different food chains in a real ecosystem. For this activity, build the simple example using the organisms provided.</p>
+  </section>
+
+  <section class="panel" id="detective">
+    <h2>🔎 Challenge 4: The Christmas Garden Mystery</h2>
+    <p class="lead">Something has gone wrong in Santa's school garden. Read each situation and choose the best explanation or action.</p>
+    <div class="question">
+      <p>1. The garden has only one type of plant, very few insects and no birds. What is likely to be low?</p>
+      <div class="answers" data-answer="B">
+        <button data-value="A">Soil temperature</button><button data-value="B">Biodiversity</button><button data-value="C">Sunlight</button>
+      </div><div class="feedback"></div>
+    </div>
+    <div class="question">
+      <p>2. Earthworms are found in the garden soil. Why are they useful?</p>
+      <div class="answers" data-answer="C">
+        <button data-value="A">They eat all the plant roots</button><button data-value="B">They stop plants needing water</button><button data-value="C">They break down organic matter and help aerate soil</button>
+      </div><div class="feedback"></div>
+    </div>
+    <div class="question">
+      <p>3. Bees are visiting the flowers. What are they collecting?</p>
+      <div class="answers" data-answer="A">
+        <button data-value="A">Nectar and pollen</button><button data-value="B">Soil and seeds</button><button data-value="C">Leaves and roots</button>
+      </div><div class="feedback"></div>
+    </div>
+    <div class="question">
+      <p>4. Someone sprays pesticides everywhere and removes flowering plants. What could happen?</p>
+      <div class="answers" data-answer="B">
+        <button data-value="A">Biodiversity will always increase</button><button data-value="B">Some insects and other wildlife may decline</button><button data-value="C">All plants will become producers</button>
+      </div><div class="feedback"></div>
+    </div>
+    <div class="question">
+      <p>5. A gardener adds food scraps, leaves and grass clippings to a compost bin. What are they making?</p>
+      <div class="answers" data-answer="C">
+        <button data-value="A">Pesticide</button><button data-value="B">A habitat</button><button data-value="C">Compost</button>
+      </div><div class="feedback"></div>
+    </div>
+    <div class="question">
+      <p>6. A plant is growing poorly. Which group contains things plants need to survive and grow?</p>
+      <div class="answers" data-answer="A">
+        <button data-value="A">Sunlight, water, air (CO₂), nutrients and suitable temperatures</button><button data-value="B">Only soil and darkness</button><button data-value="C">Only insects and compost</button>
+      </div><div class="feedback"></div>
+    </div>
+    <div class="controls"><button class="btn" id="detectiveDone">Finish detective round</button></div>
+    <div class="feedback" id="detectiveTotal" aria-live="polite"></div>
+  </section>
+
+  <section class="panel" id="quiz">
+    <h2>⭐ Challenge 5: The Christmas Garden Final</h2>
+    <p class="lead">Last round! Answer these without looking back at the cards. You can retry, so use mistakes to learn.</p>
+    <div class="scorebox">Correct: <span id="quizScore">0</span> / <span id="quizCount">8</span></div>
+    <div id="quizQuestions"></div>
+    <div class="controls"><button class="btn" id="checkQuiz">Mark my answers</button><button class="btn secondary" id="retryQuiz">Try again</button></div>
+    <div class="feedback" id="quizFeedback" aria-live="polite"></div>
+    <div class="note" style="margin-top:18px">🎄 When you finish, tell your teacher: one thing you understand now that you didn't understand before, and one thing you still need to practise.</div>
+  </section>
+</main>
+<footer>🌿 9 Hort • Learn it, try it, grow it! 🌿</footer>
+<script>
+const tabs=[...document.querySelectorAll('.nav button')], panels=[...document.querySelectorAll('.panel')];
+let completed=new Set();
+function updateProgress(){document.getElementById('progress').value=completed.size;document.getElementById('progressText').textContent=completed.size+' / 5 challenges';}
+function complete(id){completed.add(id);updateProgress();}
+tabs.forEach(b=>b.addEventListener('click',()=>{tabs.forEach(x=>x.classList.toggle('active',x===b));panels.forEach(p=>p.classList.toggle('active',p.id===b.dataset.tab));}));
+const cards=[
+['Biodiversity','The variety of living organisms in an area.'],
+['Habitat','The place where an organism lives.'],
+['Ecosystem','Living things and their non-living environment interacting.'],
+['Producer','An organism, such as a plant, that makes its own food, usually through photosynthesis.'],
+['Herbivore','An animal that eats only plants.'],
+['Predator','An animal that hunts and eats other animals.'],
+['Decomposer','An organism that breaks down dead plants and animals.'],
+['Pollination','The transfer of pollen from one flower to another, or within a flower.'],
+['Photosynthesis','The process plants use to make their own food using sunlight.'],
+['Native plant','A plant that occurs naturally in New Zealand.'],
+['Introduced plant','A plant brought to New Zealand from somewhere else.'],
+['Invasive species','A species that spreads and causes harm to native ecosystems.']
+];
+let cardIndex=0, shown=false;
+function showCard(){document.getElementById('cardNumber').textContent=cardIndex+1;document.getElementById('term').textContent=cards[cardIndex][0];document.getElementById('definition').textContent=cards[cardIndex][1];document.getElementById('definition').classList.toggle('hidden',!shown);document.getElementById('reveal').textContent=shown?'Hide meaning':'Reveal meaning';}
+document.getElementById('cardTotal').textContent=cards.length;
+document.getElementById('reveal').onclick=()=>{shown=!shown;showCard()};
+document.getElementById('prevCard').onclick=()=>{cardIndex=(cardIndex+cards.length-1)%cards.length;shown=false;showCard()};
+document.getElementById('nextCard').onclick=()=>{cardIndex=(cardIndex+1)%cards.length;shown=false;showCard()};
+document.getElementById('learnDone').onclick=()=>{complete('learn');alert('Elf training complete! Move on to the matching challenge.')};
+showCard();
+
+const pairs=[
+['Herbivore','An animal that eats only plants.'],
+['Pollination','Pollen is transferred from one flower to another.'],
+['Decomposer','Breaks down dead plants and animals.'],
+['Producer','Makes its own food.'],
+['Habitat','The place where an organism lives.'],
+['Photosynthesis','Plants use sunlight to make food.']
+];
+let selected=null,found=0;
+function setupMatch(){
+ selected=null;found=0;document.getElementById('pairsFound').textContent='0';document.getElementById('matchFeedback').textContent='';
+ const left=pairs.map((p,i)=>({text:p[0],id:i,side:'l'})).sort(()=>Math.random()-.5);
+ const right=pairs.map((p,i)=>({text:p[1],id:i,side:'r'})).sort(()=>Math.random()-.5);
+ const grid=document.getElementById('matchGrid');grid.innerHTML='';
+ [...left,...right].forEach(item=>{const b=document.createElement('button');b.className='matchbtn';b.textContent=item.text;b.dataset.id=item.id;b.dataset.side=item.side;b.onclick=()=>pickMatch(b);grid.appendChild(b)});
+}
+function pickMatch(b){
+ if(b.classList.contains('done'))return;
+ if(!selected){selected=b;b.classList.add('selected');return;}
+ if(selected===b){b.classList.remove('selected');selected=null;return;}
+ if(selected.dataset.side===b.dataset.side){selected.classList.remove('selected');selected=b;b.classList.add('selected');return;}
+ if(selected.dataset.id===b.dataset.id){selected.classList.remove('selected');selected.classList.add('done');b.classList.add('done');found++;document.getElementById('pairsFound').textContent=found;document.getElementById('matchFeedback').textContent='🌟 Match found!';document.getElementById('matchFeedback').className='feedback good';if(found===pairs.length){document.getElementById('matchFeedback').textContent='Brilliant! All six pairs matched.';complete('match')}}
+ else{document.getElementById('matchFeedback').textContent='Not quite. Think about what the word does or describes.';document.getElementById('matchFeedback').className='feedback bad';selected.classList.remove('selected')}
+ selected=null;
+}
+document.getElementById('resetMatch').onclick=setupMatch;setupMatch();
+
+const organisms=['Grass','Caterpillar','Small bird'];let chosen=[];
+function renderChain(){
+ const c=document.getElementById('chainChoices');c.innerHTML='';
+ [...organisms].sort(()=>Math.random()-.5).forEach(x=>{let b=document.createElement('button');b.textContent=x;b.className=chosen.includes(x)?'chosen':'';b.disabled=chosen.includes(x);b.onclick=()=>{if(chosen.length<3){chosen.push(x);renderChain()}};c.appendChild(b)});
+ const s=document.getElementById('chainSlots');s.innerHTML='';
+ for(let i=0;i<3;i++){let d=document.createElement('div');d.className='slot';d.textContent=(i+1)+'. '+(chosen[i]||'Choose an organism');s.appendChild(d);if(i<2){let a=document.createElement('span');a.textContent='→';s.appendChild(a)}}
+}
+document.getElementById('checkChain').onclick=()=>{let f=document.getElementById('chainFeedback');if(chosen.length!==3){f.textContent='Choose all three organisms first.';f.className='feedback bad';return}if(chosen.join('|')==='Grass|Caterpillar|Small bird'){f.textContent='Excellent! Energy moves from the grass to the caterpillar, then to the small bird.';f.className='feedback good';complete('chain')}else{f.textContent='Not quite. Start with the producer, then the plant-eater, then the animal that eats it.';f.className='feedback bad'}};
+document.getElementById('clearChain').onclick=()=>{chosen=[];document.getElementById('chainFeedback').textContent='';renderChain()};renderChain();
+
+document.querySelectorAll('#detective .answers button').forEach(b=>b.onclick=()=>{const group=b.parentElement;group.querySelectorAll('button').forEach(x=>x.style.borderColor='#b9cfb1');b.style.borderColor='#174b38';group.dataset.chosen=b.dataset.value;});
+document.getElementById('detectiveDone').onclick=()=>{
+ let score=0;document.querySelectorAll('#detective .question').forEach(q=>{let g=q.querySelector('.answers'),f=q.querySelector('.feedback');if(g.dataset.chosen===g.dataset.answer){score++;f.textContent='✓ Good thinking.';f.className='feedback good'}else{f.textContent='Have another look at the choices and try to explain the correct idea.';f.className='feedback bad'}});
+ document.getElementById('detectiveTotal').textContent='You got '+score+' out of 6. Review any you missed, then try again.';if(score===6)complete('detective');
+};
+
+const quiz=[
+{q:'What is a food chain?',a:['A sequence showing how energy passes between organisms through eating.','A list of plants growing in one garden.','A map showing where animals sleep.'],c:0,why:'A food chain shows energy passing between organisms through eating.'},
+{q:'What do plants take in from the air for photosynthesis?',a:['Oxygen only','Carbon dioxide (CO₂)','Nitrogen gas only'],c:1,why:'Plants use carbon dioxide, water and light energy in photosynthesis.'},
+{q:'What is one important role of insects in an ecosystem?',a:['They all eat plant roots.','They stop decomposition.','They can pollinate flowers and provide food for other animals.'],c:2,why:'Insects contribute through pollination, decomposition, food webs and nutrient cycling.'},
+{q:'What is the difference between a habitat and an ecosystem?',a:['A habitat is where an organism lives; an ecosystem includes living things interacting with their non-living environment.','They mean exactly the same thing.','An ecosystem is only the animals in an area.'],c:0,why:'A habitat is a place to live; an ecosystem includes interactions between organisms and their non-living environment.'},
+{q:'Why is a variety of plants useful in a garden?',a:['It removes the need for soil.','It provides different habitats and food sources for wildlife.','It prevents all insects from visiting.'],c:1,why:'Different plants provide different food sources and habitats, supporting more wildlife and biodiversity.'},
+{q:'What can happen if insects disappear from a food chain?',a:['Animals that eat insects may decline, and pollination may be affected.','All plants immediately become predators.','Nothing in the ecosystem changes.'],c:0,why:'Animals relying on insects for food may decline, and pollination can be affected.'},
+{q:'Which is an example of something that can reduce biodiversity in a garden?',a:['Providing different plant habitats','Leaving some natural areas undisturbed','Habitat destruction and excessive pesticide use'],c:2,why:'Habitat destruction and pesticides can reduce the number and variety of organisms.'},
+{q:'What do earthworms do that helps soil?',a:['They improve soil structure and help aerate it.','They turn sunlight into food.','They pollinate flowers.'],c:0,why:'Earthworms break down organic matter, improve soil structure and help aerate the soil.'}
+];
+document.getElementById('quizCount').textContent=quiz.length;
+function renderQuiz(){let root=document.getElementById('quizQuestions');root.innerHTML='';quiz.forEach((q,i)=>{let d=document.createElement('div');d.className='question';d.innerHTML='<p>'+(i+1)+'. '+q.q+'</p><div class="answers">'+q.a.map((a,j)=>'<button data-value="'+j+'">'+a+'</button>').join('')+'</div><div class="feedback"></div>';d.querySelectorAll('button').forEach(b=>b.onclick=()=>{d.dataset.choice=b.dataset.value;d.querySelectorAll('button').forEach(x=>x.style.borderColor='#b9cfb1');b.style.borderColor='#174b38'});root.appendChild(d)})}
+document.getElementById('checkQuiz').onclick=()=>{let score=0;document.querySelectorAll('#quizQuestions .question').forEach((d,i)=>{let f=d.querySelector('.feedback'),choice=Number(d.dataset.choice);if(d.dataset.choice!==undefined&&choice===quiz[i].c){score++;f.textContent='✓ '+quiz[i].why;f.className='feedback good'}else{f.textContent='Not yet. '+quiz[i].why;f.className='feedback bad'}});document.getElementById('quizScore').textContent=score;document.getElementById('quizFeedback').textContent=score===quiz.length?'Perfect score! You are ready for the next mission.': 'You scored '+score+' out of '+quiz.length+'. Read the explanations and have another go.';if(score===quiz.length)complete('quiz')};
+document.getElementById('retryQuiz').onclick=()=>{renderQuiz();document.getElementById('quizScore').textContent='0';document.getElementById('quizFeedback').textContent=''};
+renderQuiz();
+</script>
+</body>
+</html>
